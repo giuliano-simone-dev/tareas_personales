@@ -86,8 +86,21 @@ export default Vue.extend({
             } else {
                 tarea.finishedAt = new Date();
             }
-            await this.editarTarea(tarea);
-            loadingComponent.close();
+            try{
+                await this.editarTarea(tarea);
+                this.$buefy.notification.open({
+                    message: `Tarea ${tarea.finishedAt ? 'completada' : 'reabierta'}`,
+                    type: 'is-success'
+                });
+            }catch(e){
+                console.error(e);
+                this.$buefy.notification.open({
+                    message: 'Error al actualizar la tarea',
+                    type: 'is-danger'
+                });
+            }finally{
+                loadingComponent.close();
+            }
         },
         editarTareaEvent(tarea: Tareas) {
             console.log(this.editarTareaEditando)

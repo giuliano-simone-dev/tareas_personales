@@ -102,27 +102,43 @@ export default Vue.extend({
             const loadingComponent = this.$buefy.loading.open({
                 container: null,
             })
-            if (this.tareaEditando) {
-                this.tareaEditando.title = this.tarea.title;
-                this.tareaEditando.description = this.tarea.description;
-                this.tareaEditando.expiration = this.tarea.expiration as Date;
-                await this.editarTarea(this.tareaEditando);
-                await this.editarTareaEditando(null);
-            } else {
-                let tarea = new Tareas({
-                    _id: null,
-                    title: this.tarea.title,
-                    description: this.tarea.description,
-                    expiration: this.tarea.expiration as Date,
-                    userID: session.uid,
-                    finishedAt: null
-                })
+            let msg = "";
+            try{
+                if (this.tareaEditando) {
+                    this.tareaEditando.title = this.tarea.title;
+                    this.tareaEditando.description = this.tarea.description;
+                    this.tareaEditando.expiration = this.tarea.expiration as Date;
+                    await this.editarTarea(this.tareaEditando);
+                    await this.editarTareaEditando(null);
+                    msg = 'Tarea Editada Exitosamente';
+                } else {
+                    let tarea = new Tareas({
+                        _id: null,
+                        title: this.tarea.title,
+                        description: this.tarea.description,
+                        expiration: this.tarea.expiration as Date,
+                        userID: session.uid,
+                        finishedAt: null
+                    })
 
-                await this.agregarTarea(tarea);
+                    await this.agregarTarea(tarea);
+                    msg = 'Tarea Agregada Exitosamente';
+                }
                 this.tarea = getDefaults().tarea;
+                    this.$buefy.notification.open({
+                        message: msg,
+                        type: 'is-success'
+                    });
+            }catch(e){
+                console.error(e);
+                this.$buefy.notification.open({
+                    message: 'Ha ocurrido un error inesperado',
+                    type: 'is-danger'
+                });
+            }finally{
+                loadingComponent.close();
             }
 
-            loadingComponent.close();
         },
         checkForm(): boolean {
             return Boolean(this.tarea.title && this.tarea.description && this.tarea.expiration);
@@ -130,6 +146,10 @@ export default Vue.extend({
         stopEdit(): void {
             this.editarTareaEditando(null);
             this.tarea = getDefaults().tarea;
+            this.$buefy.notification.open({
+                message: 'Edición Cancelada',
+                type: 'is-info'
+            });
         },
         deleteTareaBTN(): void {
             this.$buefy.dialog.confirm({
@@ -143,6 +163,10 @@ export default Vue.extend({
                     if (this.tareaEditando) {
                         this.eliminarTarea(this.tareaEditando);
                         this.stopEdit();
+                        this.$buefy.notification.open({
+                            message: 'Tarea Eliminada Exitosamente',
+                            type: 'is-success'
+                        });
                     }
                 }
             })

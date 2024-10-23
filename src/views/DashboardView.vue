@@ -20,8 +20,8 @@
 <script lang="ts">
 
 import Vue from 'vue';
-import ListaTareas from './ListaTareas.vue';
-import formTarea from './formTarea.vue';
+import ListaTareas from '@/components/ListaTareas.vue';
+import formTarea from '@/components/formTarea.vue';
 import { mapGetters } from 'vuex';
 import type Tareas from '@/classes/tareas/Tareas';
 export default Vue.extend({

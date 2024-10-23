@@ -24,6 +24,14 @@ export default new Vuex.Store<RootState>({
     getSession: state => {
       state.session ??= JSON.parse(localStorage.getItem('session') || 'null');
       return state.session;
+    },
+    getUserDBData: async (state) => {
+      let session = (state.session ?? JSON.parse(localStorage.getItem('session') || 'null'));
+      if (!session) {
+        return null;
+      }
+      const user = await db.collection('users').doc(session.uid).get();
+      return user.data() || null;
     }
   },
   mutations: {
@@ -36,7 +44,6 @@ export default new Vuex.Store<RootState>({
       state.showLogin = value;
     },
     async setSession(state, value: firebase.User | null) {
-      debugger;
       state.session = value;
       if (value) {
         localStorage.setItem('session', JSON.stringify(value));

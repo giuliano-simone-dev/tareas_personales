@@ -53,7 +53,6 @@ const actions = {
 
   },
   async editarTarea({ commit }: ActionContext<TareasState, RootState>, tarea: Tareas) {
-    debugger;
     await state.service.editarTarea(tarea);
     commit('setTareas', state.service.getAllTareas());
 
