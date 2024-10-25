@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <h2 class="is-size-2">{{ tareaEditando ? "Editar Tarea" :  "Crear Tarea"  }}</h2>
         <form action="#" @submit="sendForm">
             <div class="columns text-right">
                 <div class="" v-if="tareaEditando">

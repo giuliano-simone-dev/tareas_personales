@@ -61,7 +61,6 @@ export default Vue.extend({
     ...mapMutations(['setShowLogin'])
   },
   async mounted() {
-    console.log('InicioView mounted');
     const loadingComponent = this.$buefy.loading.open({
       container: this.$refs.helloUser,
     })

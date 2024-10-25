@@ -1,12 +1,9 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import InicioView from '../views/InicioView.vue'
-import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
 import store from '@/store'
 
 Vue.use(VueRouter)
-Vue.use(Buefy)
 
 const routes: Array<RouteConfig> = [
   {

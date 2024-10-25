@@ -23,23 +23,21 @@ import Vue from 'vue';
 import ListaTareas from '@/components/ListaTareas.vue';
 import formTarea from '@/components/formTarea.vue';
 import { mapGetters } from 'vuex';
-import type Tareas from '@/classes/tareas/Tareas';
+
 export default Vue.extend({
   name: 'DashboardView',
   components: {
     ListaTareas,
     formTarea
   },
-  computed: {
-    tareasVencidas(): Tareas[] {
-      return this.$store.getters['tareas/getTareasVencidas'];
-    },
-    tareasCompletadas(): Tareas[] {
-      return this.$store.getters['tareas/getTareasCompletadas'];
-    }
-  },
   methods: {
-    ...mapGetters(['tareasServiceGetter'])
+    ...mapGetters(['tareasServiceGetter']),
+    ...mapGetters("tareas",['getTareasVencidas'])
+  },
+  computed: {
+    tareasVencidas() {
+      return this.getTareasVencidas();
+    }
   }
 });
 

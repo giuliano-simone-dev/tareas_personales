@@ -24,7 +24,6 @@ const getters = {
   getTareasPendientes: (): Tareas[] => state.service.tareasPendientes,
   getTareasCompletadas: (): Tareas[] => state.service.tareasCompletadas,
   getTareaEditando: (state: TareasState): Tareas | null => {
-    console.log(state.tareaEditando);
     return state.tareaEditando
   }
 };
