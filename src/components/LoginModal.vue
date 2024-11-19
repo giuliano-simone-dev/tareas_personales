@@ -74,36 +74,38 @@ import Vue from 'vue';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { IdefaultData } from '../interfaces/login';
 
-const defaultData: IdefaultData = {
-
-  showRegister: false,
-  messageLoginStatus: {
-    type: '',
-    message: ''
-  },
-  messageRegisterStatus: {
-    email: {
+let getDefaultData = function():IdefaultData{
+  return {
+    showRegister: false,
+    messageLoginStatus: {
       type: '',
       message: ''
+    },
+    messageRegisterStatus: {
+      email: {
+        type: '',
+        message: ''
+      }
+    },
+    loginData: {
+      email: '',
+      password: ''
+    },
+    registerData: {
+      name: '',
+      email: '',
+      password: '',
+      image: null as File | null
     }
-  },
-  loginData: {
-    email: '',
-    password: ''
-  },
-  registerData: {
-    name: '',
-    email: '',
-    password: '',
-    image: null as File | null
-  }
 
+  }
 }
+
 
 export default Vue.extend({
   name: 'LoginModal',
   data() {
-    return defaultData;
+    return getDefaultData();
   },
   computed: {
     showLogin: {
@@ -141,7 +143,7 @@ export default Vue.extend({
           message: 'Inicio de sesión exitoso',
           type: 'is-success'
         });
-        this.loginData = defaultData.loginData;
+        this.loginData = getDefaultData().loginData;
         this.showLogin = false;
         this.$router.push({ path: '/dashboard' });
 
@@ -174,7 +176,7 @@ export default Vue.extend({
         })
 
         this.$router.push({ path: '/dashboard' });
-        this.registerData = defaultData.registerData;
+        this.registerData = getDefaultData().registerData;
         this.showLogin = false;
         loading.close();
 
