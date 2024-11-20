@@ -119,6 +119,7 @@ export default Vue.extend({
                         description: this.tarea.description,
                         expiration: this.tarea.expiration as Date,
                         userID: session.uid,
+                        subTareas: [],
                         finishedAt: null
                     })
 

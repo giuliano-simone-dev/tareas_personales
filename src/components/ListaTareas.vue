@@ -19,13 +19,41 @@
                 <p>{{ tarea.description }}</p>
                 <section class="columns mt-2">
                     <div class="column is-half">
-                        <a href="#" class="small" @click="editarTareaEvent(tarea)">Editar</a>
+                        <a href="#" class="small" @click="editarTareaEvent(tarea)" v-if="tarea.finishedAt==null">Editar</a>
+                        <a href="#" class="small px-4" @click="modalSubtarea(tarea)" v-if="tarea.finishedAt==null">Agregar Subtarea</a>
                     </div>
                     <div class="column is-half">
                         <p class="small text-end" :class="{ 'has-text-danger': expired }">
                             {{ tarea.finishedAt ? `Hecho el ${tarea.finishedAt.toLocaleDateString('es-ES')}` : `Vence el ${tarea.expiration.toLocaleDateString('es-ES')}` }}
                         </p>                
                     </div>
+                </section>
+                <section v-if="tarea.subTareas.length">
+                        <b-progress 
+                            type="is-info" 
+                            :value="calculateProgress(tarea)" 
+                            show-value
+                            format="percent"
+                        />
+                    <h4 class="has-text-weight-bold py-2">Subtareas</h4>
+                    <ul>
+                        <li v-for="(subtarea, key) in tarea.subTareas">
+                            <section class="columns py-0">
+                                <div class="column is-6">
+                                    <p><span class="has-text-weight-semibold">{{ subtarea.title }}</span> : {{ subtarea.description }}</p>
+                                </div>
+                                <div class="column is-6 force-vertical-center">
+                                    <b-field>
+                                        <b-checkbox :disabled="Boolean(tarea.finishedAt)" type="is-success" :value="Boolean(tarea.finishedAt) || Boolean(subtarea.finishedAt)"
+                                            @input="markAsDone(subtarea, tarea)">Hecho</b-checkbox>
+                                    </b-field>
+                                </div>
+                            </section>
+                            <section class="columns pb-3">
+                                <a href="#" class="small px-4" @click="eliminarSubTarea(tarea, key)" v-if="tarea.finishedAt==null">Eliminar</a>
+                            </section>
+                        </li>
+                    </ul>
                 </section>
                 <hr>
             </div>
@@ -43,6 +71,7 @@ import Vue from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import Tareas from '@/classes/tareas/Tareas';
 import tareas from '@/store/modules/tareas';
+import { ISubTarea } from '@/interfaces/tareas';
 
 export default Vue.extend({
     name: 'ListaTareas',
@@ -75,9 +104,9 @@ export default Vue.extend({
         }
     },
     methods: {
-        ...mapActions('tareas', ['fetchTareas', 'agregarTarea', 'editarTarea', 'eliminarTarea', 'editarTareaEditando']),
+        ...mapActions('tareas', ['fetchTareas', 'agregarTarea', 'editarTarea', 'eliminarTarea', 'editarTareaEditando', 'setShowSubtareaModal']),
         ...mapGetters('tareas', ['getService']),
-        async markAsDone(tarea: Tareas) {
+        async markAsDone(tarea: Tareas|ISubTarea, padre:Tareas|null = null) {
             const loadingComponent = this.$buefy.loading.open({
                 container: null,
             })
@@ -87,7 +116,7 @@ export default Vue.extend({
                 tarea.finishedAt = new Date();
             }
             try{
-                await this.editarTarea(tarea);
+                await this.editarTarea(padre || tarea);
                 this.$buefy.notification.open({
                     message: `Tarea ${tarea.finishedAt ? 'completada' : 'reabierta'}`,
                     type: 'is-success'
@@ -105,6 +134,38 @@ export default Vue.extend({
         editarTareaEvent(tarea: Tareas) {
             console.log(this.editarTareaEditando)
             this.editarTareaEditando(tarea);
+        },
+        modalSubtarea(tarea: Tareas){
+            this.editarTareaEditando(tarea);
+            this.setShowSubtareaModal(true);
+        },
+        calculateProgress(tarea:Tareas): number {
+            if(tarea.finishedAt){
+                return 100;
+            }
+            const subTareas = tarea.subTareas;
+            const total = subTareas.length;
+            const completadas = subTareas.filter((subtarea) => subtarea.finishedAt).length;
+            return (completadas / total)*100;
+        },
+        eliminarSubTarea(tarea: Tareas, key: number){
+            //ask for confirmation
+            this.$buefy.dialog.confirm({
+                title: 'Borrar SubTarea',
+                message: '¿Seguro que quieres <b>borrar</b> la subtarea? Esta acción no se puede deshacer.',
+                confirmText: 'Borrrar Tarea',
+                cancelText: 'Cancelar',
+                type: 'is-danger',
+                hasIcon: true,
+                onConfirm: () => {
+                    tarea.subTareas.splice(key, 1);
+                    this.editarTarea(tarea);
+                    this.$buefy.notification.open({
+                        message: 'Subtarea eliminada',
+                        type: 'is-success'
+                    });
+                }
+            })
         }
     },
     async created() {

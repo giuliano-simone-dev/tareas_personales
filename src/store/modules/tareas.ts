@@ -2,24 +2,27 @@
 import { Module, ActionContext } from 'vuex';
 import Tareas from '@/classes/tareas/Tareas';
 import TareasService from '@/services/TareasService';
-import type {TareasServiceIndex, TareasServiceType} from '@/services/TareasService';
+import type { TareasServiceType } from '@/services/TareasService';
 import type { RootState } from '@/store';
 
 export interface TareasState {
   tareas: Tareas[];
   service: TareasServiceType;
+  showSubtareaModal: boolean,
   tareaEditando: Tareas | null;
 }
 
 const state: TareasState = {
   tareas: [],
   service: TareasService,
+  showSubtareaModal: false,
   tareaEditando: null 
 };
 
 const getters = {
   getTareas: (state: TareasState): Tareas[] => state.tareas,
   getService: (): TareasServiceType => state.service,
+  getShowSubtareaModal: (state: TareasState): boolean => state.showSubtareaModal,
   getTareasVencidas: (): Tareas[] => state.service.tareasVencidas,
   getTareasPendientes: (): Tareas[] => state.service.tareasPendientes,
   getTareasCompletadas: (): Tareas[] => state.service.tareasCompletadas,
@@ -37,6 +40,9 @@ const mutations = {
   },
   setTareaEditando(state: TareasState, tarea: Tareas) {
     state.tareaEditando = tarea;
+  },
+  setShowSubtareaModal(state: TareasState, value: boolean) {
+    state.showSubtareaModal = value;
   }
 };
 
@@ -62,6 +68,9 @@ const actions = {
   },
   editarTareaEditando({ commit }: ActionContext<TareasState, RootState>, tarea: Tareas | null) {
     commit('setTareaEditando', tarea);
+  },
+  setShowSubtareaModal({ commit }: ActionContext<TareasState, RootState>, value: boolean) {
+    commit('setShowSubtareaModal', value);
   }
 };
 

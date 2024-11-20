@@ -3,9 +3,17 @@ export default interface ITarea {
     title: string;
     userID: string;
     description: string;
+    subTareas: ISubTarea[];
     finishedAt: Date | null;
-    expiration: Date;
+    expiration: Date | null;
 }
+
+export interface ISubTarea {
+    title: string;
+    description: string;
+    finishedAt: Date | null;
+}
+
 export interface IdefaultForm {
     tarea: {
         title: string,

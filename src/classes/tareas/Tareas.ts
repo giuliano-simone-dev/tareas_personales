@@ -1,4 +1,4 @@
-import ITarea from "@/interfaces/tareas";
+import ITarea, { ISubTarea } from "@/interfaces/tareas";
 import IDatabaseEntity from "@/interfaces/databaseEntity";
 import { db } from "@/firebase";
 export default class Tareas implements ITarea, IDatabaseEntity{
@@ -6,14 +6,16 @@ export default class Tareas implements ITarea, IDatabaseEntity{
     title: string;
     description: string;
     userID: string;
+    subTareas: ISubTarea[];
     finishedAt: Date | null;
     expiration: Date;
     
-    constructor({_id = null, title, description, userID, finishedAt = null, expiration} : {_id: string | null, title: string, description: string, userID: string, finishedAt: Date | null, expiration: Date}) {
+    constructor({_id = null, title, description, userID, subTareas = null, finishedAt = null, expiration} : {_id: string | null, title: string, description: string, userID: string, subTareas: ISubTarea[] | null , finishedAt: Date | null, expiration: Date}) {
         this._id = _id;
         this.title = title;
         this.description = description;
         this.userID = userID;
+        this.subTareas = subTareas || [];
         this.finishedAt = finishedAt;
         this.expiration = expiration;
     }
@@ -26,6 +28,7 @@ export default class Tareas implements ITarea, IDatabaseEntity{
                     title: this.title,
                     description: this.description,
                     userID: this.userID,
+                    subTareas: this.subTareas,
                     finishedAt: this.finishedAt,
                     expiration: this.expiration
                 });
@@ -74,6 +77,7 @@ export default class Tareas implements ITarea, IDatabaseEntity{
                     title: data.title,
                     description: data.description,
                     userID: data.userID,
+                    subTareas: data.subTareas,
                     finishedAt: data.finishedAt?.toDate(),
                     expiration: data.expiration.toDate()
                 }));

@@ -13,8 +13,9 @@
         <ListaTareas title="Tareas Completas" lista="tareasCompletadas" />
       </div>
     </div>
-  </section>
 
+    <ModalSubtarea />
+  </section>
 </template>
 
 <script lang="ts">
@@ -23,12 +24,14 @@ import Vue from 'vue';
 import ListaTareas from '@/components/ListaTareas.vue';
 import formTarea from '@/components/formTarea.vue';
 import { mapGetters } from 'vuex';
+import ModalSubtarea from '@/components/modalSubtarea.vue';
 
 export default Vue.extend({
   name: 'DashboardView',
   components: {
     ListaTareas,
-    formTarea
+    formTarea,
+    ModalSubtarea
   },
   methods: {
     ...mapGetters(['tareasServiceGetter']),
