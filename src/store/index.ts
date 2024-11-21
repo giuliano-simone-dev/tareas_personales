@@ -79,8 +79,14 @@ export default new Vuex.Store<RootState>({
 
         const storedRef = storage.ref();
         const fileRef = storedRef.child('profileImages/' + user.uid);
-        await fileRef.put(image);
-        const photoURL = await fileRef.getDownloadURL();
+        let photoURL = '';
+        if(image){
+          await fileRef.put(image);
+          photoURL = await fileRef.getDownloadURL();
+        }else{
+          photoURL = "";
+        }
+
         db.collection('users').doc(user.uid).set({
           name,
           email: user.email,

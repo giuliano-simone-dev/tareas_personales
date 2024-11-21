@@ -5,8 +5,8 @@
       <div v-if="sessionData">
       <h2>¡Hola <span class="has-text-weight-bold	">{{sessionData.name}}</span>!</h2>
       <router-link to="/dashboard">Ir al Dashboard</router-link>
-      <div class="container">
-        <b-image v-if="sessionData.photoURL" class="is-3"
+      <div class="container" v-if="sessionData.photoURL">
+        <b-image class="is-3"
               ratio="1980by1080"
               :src="sessionData.photoURL"
               alt="Imagen de perfil" />
