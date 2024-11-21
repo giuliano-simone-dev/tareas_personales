@@ -68,7 +68,7 @@ export default new Vuex.Store<RootState>({
       await commit('setSession', null);
       await auth.signOut();
     },
-    async register({ commit }, { email, password, name, image }: { email: string, password: string, name: string, image: File }) {
+    async register({ commit }, { email, password, name, image }: { email: string, password: string, name: string, image: File|null }) {
       try {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         const user = userCredential.user;
