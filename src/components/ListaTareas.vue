@@ -29,12 +29,14 @@
                     </div>
                 </section>
                 <section v-if="tarea.subTareas.length">
-                        <b-progress 
-                            type="is-info" 
+                        <b-progress
+                            :type="isFinished(tarea) ? 'is-success' : 'is-info'" 
                             :value="calculateProgress(tarea)" 
                             show-value
                             format="percent"
-                        />
+                        >
+                        {{ isFinished(tarea) ? 'Completado' : `${calculateProgress(tarea)}%` }}
+                        </b-progress>
                     <h4 class="has-text-weight-bold py-2">Subtareas</h4>
                     <ul>
                         <li v-for="(subtarea, key) in tarea.subTareas">
@@ -147,6 +149,12 @@ export default Vue.extend({
             const total = subTareas.length;
             const completadas = subTareas.filter((subtarea) => subtarea.finishedAt).length;
             return (completadas / total)*100;
+        },
+        isFinished(tarea:Tareas): boolean {
+            const subTareas = tarea.subTareas;
+            const total = subTareas.length;
+            const completadas = subTareas.filter((subtarea) => subtarea.finishedAt).length;
+            return total === completadas;
         },
         eliminarSubTarea(tarea: Tareas, key: number){
             //ask for confirmation

@@ -20,7 +20,7 @@
           <div class="doble-card">
             <section class="cell">
               <b-field label="Imágen de perfil">
-                <b-upload v-model="registerData.image" required class="cell" drag-drop accept="image/*">
+                <b-upload v-model="registerData.image" class="cell" drag-drop accept="image/*">
                   <section class="section">
                     <div class="content has-text-centered">
                       <p>
@@ -164,10 +164,11 @@ export default Vue.extend({
 
     async sendRegister(e: Event): Promise<void> {
       e.preventDefault();
-      try {
-        const loading = this.$buefy.loading.open({
+      const loading = this.$buefy.loading.open({
           container: null
         });
+      try {
+  
         await this.register(this.registerData);
 
         this.$buefy.notification.open({
@@ -178,7 +179,6 @@ export default Vue.extend({
         this.$router.push({ path: '/dashboard' });
         this.registerData = getDefaultData().registerData;
         this.showLogin = false;
-        loading.close();
 
       } catch (error: any) {
         if (error.code === 'error/register') {
@@ -192,6 +192,8 @@ export default Vue.extend({
           message: 'Ha ocurrido un error inesperado',
           type: 'is-danger'
         })
+      }finally{
+        loading.close();
       }
     }
   }
